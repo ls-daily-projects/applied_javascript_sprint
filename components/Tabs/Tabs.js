@@ -1,50 +1,57 @@
+NodeList.prototype.filter = Array.prototype.filter
+NodeList.prototype.map = Array.prototype.map
+
 class TabLink {
-    constructor(tabElement) {
-        // assign this.tabElement to the tabElement DOM reference
-        // this.tabElement;
-        // Get the `data-tab` value from this.tabElement and store it here
-        // this.tabData = ;
+    constructor($tabElement, $tabs) {
+        // assign this.$tabElement to the $tabElement DOM reference
+        this.$tabElement = $tabElement
+        this.$tabs = $tabs
+        // Get the `data-tab` value from this.$tabElement and store it here
+        this.tabData = this.$tabElement.dataset.tab
+
         // We need to find out if a user clicked 'all' cards or a specific category.  Follow the instructions below to accomplish this task:
-        /* <- Delete this comment block when you work on the if statement
-    // Check to see if this.tabData is equal to 'all'
-    if(){
-      // If `all` is true, select all cards regardless of their data attribute values
-      // this.cards = ;
-    } else {
-      // else if `all` is false, only select the cards with matching this.tabData values
-      // this.cards = ;
-    }
-    /* <- Delete this comment block when you work on the if statement */
+        this.$cards = document.querySelectorAll(".card")
+
+        // Check to see if this.tabData is equal to 'all'
+        if (this.tabData !== "all") {
+            this.$cards = this.$cards.filter(
+                $card => $card.dataset.tab === this.tabData
+            )
+        }
+
         // Map over the newly converted NodeList we just created in our if statement above. Convert each this.cards element into a new instance of the TabCard class. Pass in a card object to the TabCard class.
-        // this.cards = Array.from(this.cards).map();
+        this.cards = this.$cards.map($card => new TabCard($card))
+
         // Add a click event that invokes this.selectTab
-        // this.tabElement.addEventListener();
+        this.$tabElement.addEventListener("click", this.selectTab.bind(this))
     }
 
-    selectTab() {
-        // Select all elements with the .tab class on them
-        // const tabs = document.querySelectorAll();
+    selectTab({ target }) {
         // Iterate through the NodeList removing the .active-tab class from each element
-        // tabs.forEach()
+        this.$tabs.forEach($tab => $tab.classList.remove("active-tab"))
+
         // Select all of the elements with the .card class on them
-        // const cards = ;
         // Iterate through the NodeList setting the display style each one to 'none'
-        // cards.forEach()
-        // Add a class of ".active-tab" to this.tabElement
-        // this.tabElement;
+        document
+            .querySelectorAll(".card")
+            .forEach($card => ($card.style.display = "none"))
+
+        // Add a class of ".active-tab" to this.$tabElement
+        this.$tabElement.classList.add("active-tab")
+
         // Notice we are looping through the this.cards array and invoking selectCard() from the TabCard class. Just un-comment the code and study what is happening here.
-        // this.cards.forEach(card => card.selectCard());
+        this.cards.forEach(card => card.selectCard())
     }
 }
 
 class TabCard {
-    constructor(cardElement) {
-        // Assign this.cardElement to the cardElement DOM reference
-        // this.cardElement;
+    constructor($cardElement) {
+        // Assign this.$cardElement to the $cardElement DOM reference
+        this.$cardElement = $cardElement
     }
     selectCard() {
-        // Update the style of this.cardElement to display = "flex"
-        // this.cardElement;
+        // Update the style of this.$cardElement to display = "flex"
+        this.$cardElement.style.display = "flex"
     }
 }
 
@@ -57,4 +64,57 @@ class TabCard {
 - In your .forEach() method's callback function, return a new instance of TabLink and pass in each tab as a parameter
 
 */
-let tabs = document.querySelectorAll()
+const createArticle = (
+    headline,
+    author,
+    topic,
+    avatar = "./assets/bones.jpg"
+) => {
+    const $card = document.createElement("card")
+    $card.dataset.tab = topic
+    $card.classList.add("card")
+
+    const $headline = document.createElement("div")
+    $headline.classList.add("headline")
+    $headline.textContent = headline
+
+    const $author = document.createElement("div")
+    $author.classList.add("author")
+
+    const $imgContainer = document.createElement("div")
+    $imgContainer.classList.add("img-container")
+
+    const $img = document.createElement("img")
+    $img.setAttribute("src", avatar)
+
+    const $byline = document.createElement("span")
+    $byline.textContent = `By ${author}`
+
+    const $cardsContainer = document.querySelector(".cards-container")
+
+    $imgContainer.appendChild($img)
+
+    $author.appendChild($imgContainer)
+    $author.appendChild($byline)
+
+    $card.appendChild($headline)
+    $card.appendChild($author)
+
+    $cardsContainer.appendChild($card)
+
+    return $card
+}
+
+Array(18)
+    .fill("")
+    .map((spot, index) =>
+        createArticle(
+            `New Headline ${index + 1}`,
+            `New Author ${index + 1}`,
+            "node"
+        )
+    )
+    .map($article => new TabCard($article))
+
+const $tabs = document.querySelectorAll(".tab")
+$tabs.forEach($tab => new TabLink($tab, $tabs))
