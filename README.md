@@ -32,13 +32,23 @@ Edit this document to include your answers after each question. Make sure to lea
 
 1. What is the DOM?
 
+The Document Object Model.
+
 2. What is an event?
+
+One implementation of the observer pattern. Handles 1-n relationships really well.
 
 3. What is an event listener?
 
+The function called when an event fires.
+
 4. Why would we convert a NodeList into an Array?
 
+You want those array methods, don't ya?
+
 5. What is a component?
+
+A suitcase word that means a lot of things to a lot of people. Here, I guess it means a JS "class" responsible for the view.
 
 ### Git Set up
 
